@@ -1,0 +1,65 @@
+﻿--- How to use functions --
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Google.Apis.Services;
+using Google.Apis.Sheets.v4;
+using Newtonsoft.Json;
+using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Util.Store;
+using System.IO;
+using System.Threading;
+using System.Diagnostics;
+using System.Dynamic;
+using Google.Apis.Auth.OAuth2;
+
+namespace APis
+{
+    public partial class Form1 : Form
+    {
+        GoogleSheets api = new GoogleSheets("data", "A1:4000");
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void btnGet_Click(object sender, EventArgs e)                                                 Refresh
+        {
+            api.updateData();
+            Grid.DataSource = statics.convertToTable(statics.DataWithFlags);
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)                                              Delete
+        {
+            List<int> rowNumber = api.rowNumberSearchByIDList(txtID.Text);
+            api.Delete(rowNumber);
+
+            btnGet_Click(null,null);
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)                                              Update
+        {
+            int rowNumber = api.rowNumberSearchByID(txtID.Text);
+            api.UpdateRow($"{rowNumber}:{rowNumber}", new List<object> { txt1.Text, txt2.Text, txt3.Text });
+
+            btnGet_Click(null, null);
+        }
+
+        private void btnCreate_Click(object sender, EventArgs e)                                              Create
+        {
+            api.CreateRow(new List<object> { txt1.Text, txt2.Text, txt3.Text });
+
+            btnGet_Click(null, null);
+
+        }
+    }
+
+}
